@@ -13,42 +13,53 @@ namespace lab2_23
         }
 
         // =========================
+        // Метод получения оценок
+        // =========================
+        private int[] GetMarks(string text)
+        {
+            int[] marks = text
+                .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(int.Parse)
+                .ToArray();
+
+            foreach (int m in marks)
+            {
+                if (m < 2 || m > 5)
+                    throw new Exception("Оценки должны быть от 2 до 5");
+            }
+
+            return marks;
+        }
+
+        // =========================
         // 1. Средний балл
         // =========================
-
         private void button1_Click(object sender, EventArgs e)
         {
             try
             {
-                int[] marks = textBox1.Text
-                    .Split(' ')
-                    .Select(int.Parse)
-                    .ToArray();
+                int[] marks = GetMarks(textBox1.Text);
 
                 double avg = marks.Average();
 
                 label2.Text = "Средний балл: " + avg.ToString("F2");
             }
-            catch
+            catch (Exception ex)
             {
-                MessageBox.Show("Введите оценки через пробел!");
+                MessageBox.Show(ex.Message);
             }
         }
 
         // =========================
         // 2. Анализ оценок
         // =========================
-
         private void button2_Click(object sender, EventArgs e)
         {
             try
             {
                 listBox1.Items.Clear();
 
-                int[] marks = textBox2.Text
-                    .Split(' ')
-                    .Select(int.Parse)
-                    .ToArray();
+                int[] marks = GetMarks(textBox2.Text);
 
                 int count5 = marks.Count(x => x == 5);
                 int count4 = marks.Count(x => x == 4);
@@ -68,24 +79,20 @@ namespace lab2_23
                 listBox1.Items.Add("");
                 listBox1.Items.Add("Успеваемость: " + percent.ToString("F1") + "%");
             }
-            catch
+            catch (Exception ex)
             {
-                MessageBox.Show("Ошибка ввода!");
+                MessageBox.Show(ex.Message);
             }
         }
 
         // =========================
         // 3. Диаграмма
         // =========================
-
         private void button3_Click(object sender, EventArgs e)
         {
             try
             {
-                int[] marks = textBox3.Text
-                    .Split(' ')
-                    .Select(int.Parse)
-                    .ToArray();
+                int[] marks = GetMarks(textBox3.Text);
 
                 int count5 = marks.Count(x => x == 5);
                 int count4 = marks.Count(x => x == 4);
@@ -106,14 +113,32 @@ namespace lab2_23
                 DrawSector(g, count3, total, ref startAngle, Brushes.Orange);
                 DrawSector(g, count2, total, ref startAngle, Brushes.Red);
 
+                // легенда
+                Font font = new Font("Arial", 10);
+
+                g.FillRectangle(Brushes.Green, 10, 10, 15, 15);
+                g.DrawString("5", font, Brushes.Black, 30, 10);
+
+                g.FillRectangle(Brushes.Blue, 10, 30, 15, 15);
+                g.DrawString("4", font, Brushes.Black, 30, 30);
+
+                g.FillRectangle(Brushes.Orange, 10, 50, 15, 15);
+                g.DrawString("3", font, Brushes.Black, 30, 50);
+
+                g.FillRectangle(Brushes.Red, 10, 70, 15, 15);
+                g.DrawString("2", font, Brushes.Black, 30, 70);
+
                 pictureBox1.Image = bmp;
             }
-            catch
+            catch (Exception ex)
             {
-                MessageBox.Show("Ошибка ввода!");
+                MessageBox.Show(ex.Message);
             }
         }
 
+        // =========================
+        // Рисование сектора
+        // =========================
         private void DrawSector(Graphics g, int value, int total, ref float startAngle, Brush brush)
         {
             if (value == 0) return;
@@ -122,10 +147,10 @@ namespace lab2_23
 
             g.FillPie(
                 brush,
-                10,
-                10,
-                200,
-                200,
+                60,
+                40,
+                150,
+                150,
                 startAngle,
                 sweep);
 
