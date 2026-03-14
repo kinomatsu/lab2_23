@@ -15,7 +15,7 @@ namespace lab2_23
             foreach (int m in marks)
             {
                 if (m < 2 || m > 5)
-                    throw new Exception("Оценки должны быть от 2 до 5");
+                    throw new ArgumentException("Оценки должны быть от 2 до 5");
             }
 
             return marks;
